@@ -1,13 +1,14 @@
 import java.util.*;
 
 public class MUDGame {
+    private static Map<String, Room> rooms = new HashMap<>();
     static Scanner scanner = new Scanner(System.in);
     private static Player player;
-    private static Map<String, Room> rooms = new HashMap<>();
+
     public static void main(String[] args) {
         setupGame();
-        System.out.println(" Welcome to the  Adventure! ");
-        System.out.println("Type 'help' to see available commands.");
+        System.out.println("Добро пожаловать в игру!");
+        System.out.println("Введите 'помощь', чтобы увидеть список команд.");
 
         while (true) {
             System.out.print("> ");
@@ -17,28 +18,23 @@ public class MUDGame {
     }
 
     private static void setupGame() {
-        // Создаём комнаты
-        Room startRoom = new Room("Dungeon Entrance", "A dark cave entrance covered with moss.");
-        Room hallway = new Room("Ancient Hallway", "Faint echoes of dripping water fill the air.");
-        Room armory = new Room("Old Armory", "Rusty weapons and broken shields lie scattered around.");
+        Room startRoom = new Room("Пещера", "Темное место с влажными стенами.");
+        Room hallway = new Room("Коридор", "Факелы освещают стены. Видно старый шкаф.");
+        Room storeroom = new Room("Кладовка", "Полки забиты артефактами и архивами.");
 
-        // Связываем комнаты
-        startRoom.setExit("north", hallway);
-        hallway.setExit("south", startRoom);
-        hallway.setExit("east", armory);
-        armory.setExit("west", hallway);
+        startRoom.setExit("север", hallway);
+        hallway.setExit("юг", startRoom);
+        hallway.setExit("восток", storeroom);
+        storeroom.setExit("запад", hallway);
 
-        // Добавляем предметы
-        startRoom.addItem(new Item("Rusty Key", "A key that looks very old."));
-        armory.addItem(new Item("Iron Sword", "A sturdy, yet slightly rusted sword."));
+        startRoom.addItem(new Item("ключ", "Старый ржавый ключ."));
+        storeroom.addItem(new Item("меч", "Тяжелый железный меч."));
 
-        // Заносим в карту комнат
-        rooms.put("Dungeon Entrance", startRoom);
-        rooms.put("Ancient Hallway", hallway);
-        rooms.put("Old Armory", armory);
+        rooms.put("пещера", startRoom);
+        rooms.put("коридор", hallway);
+        rooms.put("кладовка", storeroom);
 
-        // Создаём игрока
-        player = new Player("Hero", startRoom);
+        player = new Player("Герой", startRoom);
     }
 
     private static void handleCommand(String command) {
@@ -46,45 +42,45 @@ public class MUDGame {
         String action = parts[0];
 
         switch (action) {
-            case "look":
+            case "осмотреться":
                 player.lookAround();
                 break;
-            case "go":
+            case "идти":
                 if (parts.length > 1) {
                     player.move(parts[1]);
                 } else {
-                    System.out.println("Go where?");
+                    System.out.println("Куда идти?");
                 }
                 break;
-            case "inventory":
+            case "инвентарь":
                 player.showInventory();
                 break;
-            case "pick":
+            case "взять":
                 if (parts.length > 1) {
                     player.pickUp(parts[1]);
                 } else {
-                    System.out.println("Pick up what?");
+                    System.out.println("Что взять?");
                 }
                 break;
-            case "help":
+            case "помощь":
                 showHelp();
                 break;
-            case "exit":
-                System.out.println("The adventure ends here... Goodbye!");
+            case "выход":
+                System.out.println("Игра завершена. До свидания!");
                 System.exit(0);
                 break;
             default:
-                System.out.println("Unknown command. Type 'help' for a list of commands.");
+                System.out.println("Неизвестная команда. Введите 'помощь' для списка команд.");
         }
     }
 
     private static void showHelp() {
-        System.out.println("Available commands:");
-        System.out.println("- look : Describe your surroundings.");
-        System.out.println("- go <direction>: Move in a specified direction (north, south, east, west).");
-        System.out.println("- inventory : Check your carried items.");
-        System.out.println("- pick <item>: Pick up an item.");
-        System.out.println("- help : Display this help message.");
-        System.out.println("- exit : Quit the game.");
+        System.out.println("Доступные команды:");
+        System.out.println("- осмотреться : Описать текущее местоположение.");
+        System.out.println("- идти <направление>: север, юг, восток, запад.");
+        System.out.println("- инвентарь : Проверить, что у вас есть.");
+        System.out.println("- взять <предмет>: Подобрать предмет.");
+        System.out.println("- помощь : Показать список доступных команд.");
+        System.out.println("- выход : Выйти из игры.");
     }
 }
